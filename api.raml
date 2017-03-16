@@ -1,7 +1,23 @@
 #%RAML 1.0
 title: RAS
-version: v1
+version: 1.0
+protocols: [ HTTPS ]
 baseUri: https://www.tax.service.gov.uk/
+
+documentation:
+  - title: Resource Model
+    content: !include documentation/overview.md
+  - title: Versioning
+    content: !include documentation/versioning.md
+  - title: Errors
+    content: !include documentation/errors.md
+
+uses:
+  sec: resourceTypes/securitySchemes.raml
+  annotations: resourceTypes/annotations.raml
+
+mediaType: [ application/json, application/hal+json ]
+
 types:
   NINOtype:
 #    type: !include schemas/LISAtypes.schema.json#definitions/NINOType
@@ -110,7 +126,7 @@ types:
                       {
                         "financialYear" : "2015/16",
                         "UKResidencyStatus" : "RUK",
-                        "confidenceStatus" : "confirmed" 
+                        "confidenceStatus" : "confirmed"
                       }
               403:
                 description:
