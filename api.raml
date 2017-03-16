@@ -36,11 +36,16 @@ types:
 
 /customer:
   /match:
-    description: Attempt to match a customer by matching values supplied in the
-      body.  Multiple bodies may be supported by the call over time as required.
     displayName:
       Match a customer by request body suppplied query parameters.
+    description: Attempt to match a customer by matching values supplied in the
+      body.  Multiple bodies may be supported by the call over time as required.
+
     post:
+      displayName:
+        Match a customer by request body suppplied query parameters.
+      description: Attempt to match a customer by matching values supplied in the
+        body.  Multiple bodies may be supported by the call over time as required.
       body:
         application/json:
           example: |
@@ -89,6 +94,14 @@ types:
             type: UUID
             example: "6b853b58-625f-4e64-955e-43a7cdff5c03"
         get:
+          description: |
+            Used as a temporary URL to access via GET, the root data for
+            a matched customer.  The URL is returned only from a matching action
+            using the POST to the /match path described above.  The URL is only
+            valid for a limited period of time.  After expiry a 404 will be
+            returned if accessed.
+          displayName: Supports GET of link data for a matched customer for a
+            limited period of time.
           responses:
             200:
               body:
