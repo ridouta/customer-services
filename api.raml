@@ -20,7 +20,6 @@ mediaType: [ application/json, application/hal+json ]
 
 types:
   NINOtype:
-#    type: !include schemas/LISAtypes.schema.json#definitions/NINOType
     pattern: "^[A-Z]{2}\\d{6}[A-D]$"
 
   ISO8601-Date:
@@ -68,7 +67,7 @@ types:
                 retruned in the Location header is valid for a short period of
                 time.  After that period it will fail with a 403 error code
                 and the match POST will have to be repeated.
-              example: "/customer/matchresult/08aa2149-5e6c-4f3d-8769-4b025db6ba42"
+              example: "/customer/matched/08aa2149-5e6c-4f3d-8769-4b025db6ba42"
 
         400:
           description: The match parameters supplied are not a supported
@@ -101,7 +100,7 @@ types:
             valid for a limited period of time.  After expiry a 404 will be
             returned if accessed.
           displayName: Supports GET of link data for a matched customer for a
-            limited period of time. 
+            limited period of time.
           responses:
             200:
               body:
