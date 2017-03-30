@@ -1,20 +1,22 @@
 #%RAML 1.0
-title: RAS
+title: Relief At Source
 version: 1.0
 protocols: [ HTTPS ]
-baseUri: https://www.tax.service.gov.uk/
+baseUri: https://api.service.hmrc.gov.uk/
 
 documentation:
   - title: Resource Model
     content: !include documentation/overview.md
   - title: Versioning
-    content: !include documentation/versioning.md
+    content: !include https://developer.service.hmrc.gov.uk/api-documentation/assets/common/docs/versioning.md
   - title: Errors
-    content: !include documentation/errors.md
+    content: !include https://developer.service.hmrc.gov.uk/api-documentation/assets/common/docs/errors.md
 
 uses:
-  sec: resourceTypes/securitySchemes.raml
-  annotations: resourceTypes/annotations.raml
+  sec: https://developer.service.hmrc.gov.uk/api-documentation/assets/common/modules/securitySchemes.raml
+  annotations: https://developer.service.hmrc.gov.uk/api-documentation/assets/common/modules/annotations.raml
+  types: https://developer.service.hmrc.gov.uk/api-documentation/assets/common/modules/types.raml
+  headers: https://developer.service.hmrc.gov.uk/api-documentation/assets/common/modules/headers.raml
 
 mediaType: [ application/json, application/hal+json ]
 
@@ -28,7 +30,7 @@ types:
     type: string
     pattern: "^[0-9A-Fa-f]{8}(-[0-9A-Fa-f]{4}){3}-[0-9A-Fa-f]{12}$"
     example: "6b853b58-625f-4e64-955e-43a7cdff5c03"
-  FinancialYearType :
+  TaxYearType :
     type : string
     pattern : "^\\d{4}-\\d{2}$"
     example : "2016-17"
@@ -45,6 +47,9 @@ types:
         Match a customer by request body suppplied query parameters.
       description: Attempt to match a customer by matching values supplied in the
         body.  Multiple bodies may be supported by the call over time as required.
+      is: [headers.acceptHeader]
+      (annotations.scope): "write:self-assessment"
+      securedBy: [ sec.oauth_2_0: { scopes: [ "read:customer" ] } ]
       body:
         application/json:
           example: |
@@ -121,25 +126,27 @@ types:
 
         /get-residency-status:
           description: Get the residency status for the matched customer
-            for the requested financial year
+            for the current tax year and a (possibly unconfirmed)
+            esidency status for the next tax year
           displayName: Get the residency status for the matched customer
           get:
-            queryParameters:
-              financial-year:
-                type: FinancialYearType
-                example: "2016-17"
 
             responses:
               200:
                 body:
                   application/json:
                     type: !include schemas/getResidencyStatus.schema.json
-                    example: |
-                      {
-                        "financialYear" : "2015/16",
+                    example:
+                      [{
+                        "taxYear" : "2015/16",
                         "UKResidencyStatus" : "RUK",
                         "confidenceStatus" : "confirmed"
-                      }
+                      },
+                      {
+                        "taxYear" : "2016/17",
+                        "UKResidencyStatus" : "GB-SCT",
+                        "confidenceStatus" : "unconfirmed"
+                      }]
               403:
                 description:
                   The match has timed out and the UUID is no longer valid.
